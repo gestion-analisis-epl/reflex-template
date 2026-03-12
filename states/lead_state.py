@@ -489,6 +489,7 @@ class LeadState(rx.State):
                 if texto in (l.get("nombre_cliente") or "").lower()
                 or texto in (l.get("apellido_cliente") or "").lower()
                 or texto in (l.get("nombre_ejecutivo") or "").lower()
+                or texto in (l.get("empresa_cliente") or "").lower()
                 or texto in (l.get("ciudad_interes") or "").lower()
                 or texto in (l.get("id_interno") or "").lower()
                 or texto in (l.get("servicio_producto_interes") or "").lower()

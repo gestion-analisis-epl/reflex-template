@@ -567,6 +567,11 @@ def leads_page() -> rx.Component:
                                                 on_click=lambda: LeadState.set_sort_col("fecha_contacto"),
                                                 cursor="pointer",
                                             ),
+                                            rx.table.column_header_cell(
+                                                sort_header("Empresa", "empresa_cliente"),
+                                                on_click=lambda: LeadState.set_sort_col("empresa_cliente"),
+                                                cursor="pointer",
+                                            ),
                                             rx.table.column_header_cell("Origen"),
                                             rx.table.column_header_cell(
                                                 sort_header("Ciudad", "ciudad_interes"),

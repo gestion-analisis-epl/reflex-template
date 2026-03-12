@@ -23,6 +23,7 @@ def fila_lead(lead: dict) -> rx.Component:
                 "—",
             )
         ),
+        rx.table.cell(lead["empresa_cliente"]),
         rx.table.cell(
             rx.match(
                 lead["tipo_origen"],
