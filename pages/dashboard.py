@@ -1,7 +1,55 @@
 from components.sidebar import sidebar_top_profile
 import reflex as rx
+from typing import Any
+from reflex.components.component import field
+from reflex.components.recharts.general import GraphingTooltip as BaseGraphingTooltip
+from reflex.components.recharts.cartesian import XAxis as BaseXAxis, YAxis as BaseYAxis
+from reflex.vars.base import Var
 from states.dashboard_state import DashboardState  
 from components.sidebar import sidebar_top_profile
+
+
+class GraphingTooltip(BaseGraphingTooltip):
+    """Extiende GraphingTooltip para habilitar formatter en Recharts."""
+
+    formatter: Var[Any] = field(
+        default=Var(_js_expr="undefined"),
+        is_javascript_property=True,
+    )
+
+
+class XAxis(BaseXAxis):
+    """Extiende XAxis para habilitar tickFormatter en Recharts."""
+
+    tick_formatter: Var[Any] = field(
+        default=Var(_js_expr="undefined"),
+        is_javascript_property=True,
+    )
+
+
+class YAxis(BaseYAxis):
+    """Extiende YAxis para habilitar tickFormatter en Recharts."""
+
+    tick_formatter: Var[Any] = field(
+        default=Var(_js_expr="undefined"),
+        is_javascript_property=True,
+    )
+
+
+def eje_mxn_formatter() -> Var[Any]:
+    return Var(
+        _js_expr="(value) => `$${Number(value ?? 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`"
+    )
+
+
+def tooltip_moneda() -> rx.Component:
+    """Tooltip para montos con prefijo y unidad de moneda."""
+    return GraphingTooltip.create(
+        separator=": ",
+        formatter=Var(
+            _js_expr="(value) => `$${Number(value ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`"
+        ),
+    )
 
 def metric_card(titulo: str, valor: rx.Var | str, icono: str, color: str = "blue", sufijo: str = "") -> rx.Component:
     """Componente reutilizable para tarjetas de métricas"""
@@ -193,16 +241,21 @@ def grafico_estado_origen() -> rx.Component:
                         position="right",
                     ),
                     data_key="total",
+                    unit=" MXN",
+                    name="Monto",
                     fill="#3b82f6",
                     radius=8,
                 ),
-                rx.recharts.x_axis(type_="number"),
+                XAxis.create(
+                    type_="number",
+                    tick_formatter=eje_mxn_formatter(),
+                ),
                 rx.recharts.y_axis(
                     data_key="estado",
                     type_="category",
                     width=120,
                 ),
-                rx.recharts.graphing_tooltip(),
+                tooltip_moneda(),
                 data=DashboardState.total_por_estado_origen,
                 layout="vertical",
                 height=300,
@@ -217,7 +270,7 @@ def grafico_estado_origen() -> rx.Component:
 
 def grafico_linea_negocio() -> rx.Component:
     """Gráfico de líneas de negocio"""
-    COLORS = ["#ab62c0", "#6366f1", "#22d3ee", "#f59e0b", "#10b981", "#ef4444", "#3b82f6"]
+    COLORS = ["#ab62c0", "#6366f1", "#22d3ee", "#f59e0b", "#10b981", "#ef4444", "#3b82f6", "#ec4899", "#84cc16", "#64748b"]
 
     return rx.card(
         rx.vstack(
@@ -258,13 +311,16 @@ def grafico_ejecutivos() -> rx.Component:
                         position="top",
                     ),
                     data_key="monto",
+                    unit=" MXN",
+                    name="Monto",
                     fill="#10b981",
                 ),
                 rx.recharts.x_axis(data_key="ejecutivo"),
-                rx.recharts.y_axis(
+                YAxis.create(
                     width=80,
+                    tick_formatter=eje_mxn_formatter(),
                 ),
-                rx.recharts.graphing_tooltip(),
+                tooltip_moneda(),
                 data=DashboardState.cotizaciones_por_ejecutivo,
                 height=300,
                 width="100%",
@@ -339,16 +395,21 @@ def grafico_tipo_cliente() -> rx.Component:
                         position="right",
                     ),
                     data_key="total",
+                    unit=" MXN",
+                    name="Monto",
                     fill="#016144",
                     radius=8,
                 ),
-                rx.recharts.x_axis(type_="number"),
+                XAxis.create(
+                    type_="number",
+                    tick_formatter=eje_mxn_formatter(),
+                ),
                 rx.recharts.y_axis(
                     data_key="tipo",
                     type_="category",
                     width=120,
                 ),
-                rx.recharts.graphing_tooltip(),
+                tooltip_moneda(),
                 data=DashboardState.monto_cotizacion_por_tipo,
                 layout="vertical",
                 height=300,
