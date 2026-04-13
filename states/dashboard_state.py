@@ -275,6 +275,32 @@ class DashboardState(rx.State):
         return [{"linea": k, "cantidad": v} for k, v in sorted(conteo.items())]
     
     @rx.var
+    def total_por_linea_negocio(self) -> list[dict]:
+        """Monto total por línea de negocio"""
+        conteo = {}
+        for lead in self.leads_filtrados:
+            linea = str(lead.get("linea_negocio", "Sin línea")).strip("[]'\"")
+            try:
+                monto = float(lead.get("monto_cotizacion_mxn", 0) or 0)
+            except (ValueError, TypeError):
+                monto = 0.0
+                
+            if linea in conteo:
+                conteo[linea] += monto
+            else:
+                conteo[linea] = monto
+                
+        resultado = [
+            {
+                "linea": k,
+                "monto": round(v, 2),
+                "monto_fmt": formatear_monto_compacto(v)
+            }
+            for k, v in sorted(conteo.items(), key=lambda x: x[1], reverse=True) if v > 0
+        ]
+        return resultado
+    
+    @rx.var
     def cotizaciones_por_ejecutivo(self) -> list[dict]:
         """Monto de cotizaciones por ejecutivo"""
         conteo = {}
@@ -296,7 +322,7 @@ class DashboardState(rx.State):
                 "monto": round(v, 2),
                 "monto_fmt": formatear_monto_compacto(v)
             } 
-            for k, v in sorted(conteo.items(), key=lambda x: x[1], reverse=True)
+            for k, v in sorted(conteo.items(), key=lambda x: x[1], reverse=True) if v > 0
         ]
         return resultado
     
@@ -321,7 +347,7 @@ class DashboardState(rx.State):
 
     @rx.var
     def leads_por_status(self) -> list[dict]:
-        fill = ["#6366f1", "#8b5cf6", "#a78bfa", "#c4b5fd", "#818cf8", "#e9d5ff"]
+        fill = ["#4e7cff", "#7033ff", "#f65164", "#22c0ff", "#dc7653"]
         conteo = {}
         for lead in self.leads_filtrados:
             status = lead.get("status_actual")

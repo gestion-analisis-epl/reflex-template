@@ -1,20 +1,18 @@
 # reflex_app.py
 import reflex as rx
-from rxconfig import config
 from pages.clientes import clientes_page
 from pages.leads import leads_page
 from pages.cotizaciones import cotizaciones_page
 from pages.dashboard import dashboard_page
+from pages.login import login_page
 from components.sidebar import sidebar_top_profile
-from states.cliente_state import ClienteState
-from states.lead_state import LeadState
 from states.cotizacion_state import CotizacionState
-from states.dashboard_state import DashboardState
+from states.login_state import LoginState
 from utils.scrape_news import scrape_water_news
 
 style = {
-    "font-family": "'Poppins', sans-serif",
-    "font-size": "16px",
+    "font-family": "'Inter', sans-serif",
+    "font-size": "14px",
 }
 
 def index() -> rx.Component:
@@ -48,7 +46,7 @@ def index() -> rx.Component:
                 rx.grid(
                     rx.card(
                         rx.vstack(
-                            rx.card(rx.icon("layout-dashboard"), width="50px", bg="#3d85c6", display="flex"),
+                            rx.box(rx.icon("layout-dashboard", color="#6d96ee"), width="50px", bg="#eff6ff", display="flex", border_radius="10px",padding="10px"),
                             rx.vstack(rx.text("Dashboard de Métricas", weight="bold", size="4"), rx.text("Visualiza indicadores clave en tiempo real y monitorea el desempeño general del negocio", size="2", color_scheme="gray"), spacing="1"),
                             rx.link("Ver Dashboard", href="/dashboard"),
                             spacing="2", align="start", height="100%", justify="between",
@@ -56,7 +54,7 @@ def index() -> rx.Component:
                     ),
                     rx.card(
                         rx.vstack(
-                            rx.card(rx.icon("users"), width="50px", bg="#458B74", display="flex"),
+                            rx.box(rx.icon("users", color="#ba7cf2"), width="50px", bg="#faf5ff", display="flex", border_radius="10px",padding="10px"),
                             rx.vstack(rx.text("Clientes", weight="bold", size="4"), rx.text("Administra y consulta la información de tus clientes.", size="2", color_scheme="gray"), spacing="1"),
                             rx.link("Ver Clientes", href="/clientes"),
                             spacing="2", align="start", height="100%", justify="between",
@@ -64,7 +62,7 @@ def index() -> rx.Component:
                     ),
                     rx.card(
                         rx.vstack(
-                            rx.card(rx.icon("banknote"), width="50px", bg="#e69138", display="flex"),
+                            rx.box(rx.icon("banknote", color="#f7bb98"), width="50px", bg="#fff7ed", display="flex", border_radius="10px",padding="10px"),
                             rx.vstack(rx.text("Proyectos", weight="bold", size="4"), rx.text("Administra y consulta la información de tus proyectos.", size="2", color_scheme="gray"), spacing="1"),
                             rx.link("Ver Proyectos", href="/proyectos"),
                             spacing="2", align="start", height="100%", justify="between",
@@ -102,8 +100,9 @@ def index() -> rx.Component:
     )
 
 app = rx.App(style=style)
-app.add_page(index)
-app.add_page(clientes_page, route="/clientes", on_load=ClienteState.cargar_clientes)
-app.add_page(leads_page, route="/proyectos", on_load=LeadState.cargar_leads)
-app.add_page(cotizaciones_page, route="/cotizaciones", on_load=CotizacionState.cargar_cotizaciones)
-app.add_page(dashboard_page, route="/dashboard")
+app.add_page(index, on_load=LoginState.require_auth)
+app.add_page(clientes_page, route="/clientes", on_load=LoginState.require_auth)
+app.add_page(leads_page, route="/proyectos", on_load=LoginState.require_auth)
+app.add_page(cotizaciones_page,route="/cotizaciones",on_load=[LoginState.require_auth, CotizacionState.cargar_cotizaciones],)
+app.add_page(dashboard_page, route="/dashboard", on_load=LoginState.require_auth)
+app.add_page(login_page, route="/login", on_load=LoginState.redirect_if_authenticated)

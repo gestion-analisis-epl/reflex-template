@@ -51,12 +51,12 @@ def tooltip_moneda() -> rx.Component:
         ),
     )
 
-def metric_card(titulo: str, valor: rx.Var | str, icono: str, color: str = "blue", sufijo: str = "") -> rx.Component:
+def metric_card(titulo: str, valor: rx.Var | str, icono: str, color: str = "blue", sufijo: str = "", box_color: str = "blue") -> rx.Component:
     """Componente reutilizable para tarjetas de métricas"""
     return rx.card(
         rx.vstack(
             rx.hstack(
-                rx.icon(icono, size=20, color=color),
+                rx.card(rx.icon(icono, size=20, color=color), color=box_color, display="flex", border_radius="10px"),
                 rx.text(titulo, size="2", color="gray", weight="medium"),
                 justify="between",
                 width="100%",
@@ -71,6 +71,13 @@ def metric_card(titulo: str, valor: rx.Var | str, icono: str, color: str = "blue
             align="start",
         ),
         width="100%",
+        height="150px",
+        style={
+            "background": "rgba(255, 255, 255, 0.8)",
+            "backdrop-filter": "blur(8px)",
+            "-webbit-backdrop-filter": "blur(5px)",
+            "box_shadow": "0 3px 10px rgba(0, 0, 0, 0.1)",
+        },
     )
 
 
@@ -201,27 +208,27 @@ def metricas_principales() -> rx.Component:
             "Total Proyectos",
             DashboardState.total_leads,
             "users",
-            "blue"
+            "#4e7cff",
         ),
         metric_card(
             "Cotización Total",
             rx.text("$", DashboardState.monto_total_cotizaciones_formateado),
             "dollar-sign",
-            "green",
+            "#7033ff",
             "MXN"
         ),
         metric_card(
             "Cotización Promedio",
             rx.text("$", DashboardState.monto_promedio_cotizacion_formateado),
             "trending-up",
-            "purple",
+            "#f65164",
             "MXN"
         ),
         metric_card(
             "Estados Únicos",
             DashboardState.leads_por_estado_origen.length(),
             "pie-chart",
-            "orange"
+            "#22c0ff"
         ),
         columns="4",
         spacing="4",
@@ -243,8 +250,8 @@ def grafico_estado_origen() -> rx.Component:
                     data_key="total",
                     unit=" MXN",
                     name="Monto",
-                    fill="#3b82f6",
-                    radius=8,
+                    fill="#4e7cff",
+                    radius=5,
                 ),
                 XAxis.create(
                     type_="number",
@@ -257,6 +264,45 @@ def grafico_estado_origen() -> rx.Component:
                 ),
                 tooltip_moneda(),
                 data=DashboardState.total_por_estado_origen,
+                layout="vertical",
+                height=300,
+                width="100%",
+                margin={"top": 20, "right": 80, "bottom": 20, "left": 20},
+            ),
+            spacing="3",
+            width="100%",
+        ),
+        width="100%",
+    )
+    
+def grafico_linea_negocio_barra() -> rx.Component:
+    """Gráfico de líneas de negocio"""
+    return rx.card(
+        rx.vstack(
+            rx.heading("Leads por Línea de Negocio", size="5"),
+            rx.recharts.bar_chart(
+                rx.recharts.bar(
+                    rx.recharts.label_list(
+                        data_key="monto_fmt",
+                        position="right",
+                    ),
+                    data_key="monto",
+                    unit="MXN",
+                    name="Monto",
+                    fill="#7033ff",
+                    radius=5,
+                ),
+                XAxis.create(
+                    type_="number",
+                    tick_formatter=eje_mxn_formatter(),
+                ),
+                rx.recharts.y_axis(
+                    data_key="linea",
+                    type_="category",
+                    width=120,
+                ),
+                tooltip_moneda(),
+                data=DashboardState.total_por_linea_negocio,
                 layout="vertical",
                 height=300,
                 width="100%",
@@ -313,7 +359,8 @@ def grafico_ejecutivos() -> rx.Component:
                     data_key="monto",
                     unit=" MXN",
                     name="Monto",
-                    fill="#10b981",
+                    fill="#f65164",
+                    radius=5,
                 ),
                 rx.recharts.x_axis(data_key="ejecutivo"),
                 YAxis.create(
@@ -513,7 +560,7 @@ def dashboard_page() -> rx.Component:
                 # Gráficos - Primera fila
                 rx.grid(
                     grafico_estado_origen(),
-                    grafico_linea_negocio(),
+                    grafico_linea_negocio_barra(),
                     columns="2",
                     spacing="4",
                     width="100%",
@@ -538,6 +585,10 @@ def dashboard_page() -> rx.Component:
             flex="1",
             overflow_y="auto",
             height="100vh",
+            padding_top="1em",
+            padding_left="1em",
+            padding_right="1em",
+            padding_bottom="1em",
         ),
         align="start",
         spacing="0",

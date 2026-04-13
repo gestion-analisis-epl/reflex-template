@@ -548,12 +548,12 @@ def leads_page() -> rx.Component:
                                     rx.table.header(
                                         rx.table.row(
                                             rx.table.column_header_cell(
-                                                sort_header("ID Lead", "id_interno"),
+                                                rx.hstack(rx.icon("hash", size=12), sort_header("ID Lead", "id_interno"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("id_interno"),
                                                 cursor="pointer",
                                             ),
                                             rx.table.column_header_cell(
-                                                sort_header("Nombre", "nombre_cliente"),
+                                                rx.hstack(rx.icon("user", size=12), sort_header("Nombre", "nombre_cliente"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("nombre_cliente"),
                                                 cursor="pointer",
                                             ),

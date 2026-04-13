@@ -1,4 +1,5 @@
 import reflex as rx
+from states.login_state import LoginState
 
 class SidebarState(rx.State):
     collapsed: bool = False
@@ -16,7 +17,7 @@ def sidebar_item(text: str, icon: str, href: str) -> rx.Component:
             rx.icon(icon),
             rx.cond(
                 SidebarState.expanded,
-                rx.text(text, size="3"),
+                rx.text(text, size="2"),
             ),
             width="100%",
             padding_x="0.5rem",
@@ -60,7 +61,7 @@ def sidebar_top_profile() -> rx.Component:
                             rx.vstack(
                                 rx.box(
                                     rx.text("Mi cuenta", size="3", weight="bold"),
-                                    rx.text("@kronosambiental", size="2", weight="medium"),
+                                    rx.text(LoginState.username, size="2", weight="medium"),
                                     width="100%",
                                 ),
                                 spacing="0",
@@ -90,6 +91,15 @@ def sidebar_top_profile() -> rx.Component:
                 ),
                 sidebar_items(),
                 rx.spacer(),
+                rx.button(
+                    rx.icon("log-out", size=14),
+                    rx.cond(SidebarState.expanded, "Cerrar sesión", ""),
+                    on_click=LoginState.logout,
+                    variant="soft",
+                    color_scheme="tomato",
+                    width="100%",
+                    justify=rx.cond(SidebarState.collapsed, "center", "start"),
+                ),
                 sidebar_item("Help & Support", "life-buoy", "/#"),
                 spacing="5",
                 padding_x="1em",
@@ -116,6 +126,15 @@ def sidebar_top_profile() -> rx.Component:
                             sidebar_items(),
                             rx.spacer(),
                             rx.vstack(
+                                rx.button(
+                                    rx.icon("log-out", size=14),
+                                    "Cerrar sesión",
+                                    on_click=LoginState.logout,
+                                    variant="soft",
+                                    color_scheme="red",
+                                    width="100%",
+                                    justify="start",
+                                ),
                                 sidebar_item("Help & Support", "life-buoy", "/#"),
                                 rx.divider(margin="0"),
                                 rx.hstack(
@@ -125,10 +144,10 @@ def sidebar_top_profile() -> rx.Component:
                                     rx.vstack(
                                         rx.box(
                                             rx.text(
-                                                "My account", size="3", weight="bold"
+                                                "Mi cuenta", size="3", weight="bold"
                                             ),
                                             rx.text(
-                                                "user@reflex.dev",
+                                                LoginState.username,
                                                 size="2",
                                                 weight="medium",
                                             ),
