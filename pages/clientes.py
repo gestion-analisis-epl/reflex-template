@@ -525,7 +525,16 @@ def tabla_clientes() -> rx.Component:
                         ),
                     ),
                     variant="surface",
-                    style={"min_width": "1200px", "width": "100%", "table_layout": "fixed"},
+                    style={
+                        "width": "max-content",
+                        "tablke_layout": "auto",
+                        "& tbody tr:nth-child(odd)": {
+                            "background": "var(--gray-1)"
+                        },
+                        "& tbody tr:nth-child(even)": {
+                            "background": "var(--gray-2)"
+                        },
+                    },
                 ),
                 overflow_x="auto",
                 width="100%",
@@ -557,6 +566,10 @@ def clientes_page() -> rx.Component:
             flex="1",
             overflow_y="auto",
             height="100vh",
+            padding_top="1em",
+            padding_left="1em",
+            padding_right="1em",
+            padding_bottom="1em",
         ),
         align="start",
         spacing="0",

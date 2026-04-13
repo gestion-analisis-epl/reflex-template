@@ -19,7 +19,7 @@ def fila_lead(lead: dict) -> rx.Component:
         rx.table.cell(
             rx.cond(
                 lead["fecha_contacto"],
-                lead["fecha_contacto"].to(str)[:10],
+                lead["fecha_contacto"].to(str)[8:10] + "/" + lead["fecha_contacto"].to(str)[5:7] + "/" + lead["fecha_contacto"].to(str)[0:4],
                 "—",
             )
         ),
@@ -53,7 +53,7 @@ def fila_lead(lead: dict) -> rx.Component:
         rx.table.cell(
             rx.cond(
                 lead["fecha_estimada_cierre"],
-                lead["fecha_estimada_cierre"].to(str).split("T")[0],
+                lead["fecha_estimada_cierre"].to(str)[8:10] + "/" + lead["fecha_estimada_cierre"].to(str)[5:7] + "/" + lead["fecha_estimada_cierre"].to(str)[0:4],
                 "—",
             )
         ),

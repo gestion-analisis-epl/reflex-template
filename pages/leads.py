@@ -553,44 +553,60 @@ def leads_page() -> rx.Component:
                                                 cursor="pointer",
                                             ),
                                             rx.table.column_header_cell(
-                                                rx.hstack(rx.icon("user", size=12), sort_header("Nombre", "nombre_cliente"), align="center"),
+                                                rx.hstack(rx.icon("users", size=12), sort_header("Nombre", "nombre_cliente"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("nombre_cliente"),
                                                 cursor="pointer",
                                             ),
                                             rx.table.column_header_cell(
-                                                sort_header("Ejecutivo", "nombre_ejecutivo"),
+                                                rx.hstack(rx.icon("user-round", size=12), sort_header("Nombre Ejecutivo", "nombre_ejecutivo"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("nombre_ejecutivo"),
                                                 cursor="pointer",
                                             ),
                                             rx.table.column_header_cell(
-                                                sort_header("Fecha Contacto", "fecha_contacto"),
+                                                rx.hstack(rx.icon("calendar-days", size=12), sort_header("Fecha Contacto", "fecha_contacto"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("fecha_contacto"),
                                                 cursor="pointer",
                                             ),
                                             rx.table.column_header_cell(
-                                                sort_header("Empresa", "empresa_cliente"),
+                                                rx.hstack(rx.icon("building", size=12), sort_header("Empresa", "empresa_cliente"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("empresa_cliente"),
                                                 cursor="pointer",
                                             ),
-                                            rx.table.column_header_cell("Origen"),
                                             rx.table.column_header_cell(
-                                                sort_header("Ciudad", "ciudad_interes"),
+                                                rx.hstack(rx.icon("phone", size=12), sort_header("Origen", "tipo_origen"), align="center"),
+                                                on_click=lambda: LeadState.set_sort_col("tipo_origen"),
+                                                cursor="pointer",
+                                            ),
+                                            rx.table.column_header_cell(
+                                                rx.hstack(rx.icon("map", size=12), sort_header("Ciudad", "ciudad_interes"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("ciudad_interes"),
                                                 cursor="pointer",
                                             ),
-                                            rx.table.column_header_cell("Servicio de Interés"),
-                                            rx.table.column_header_cell("Status"),
                                             rx.table.column_header_cell(
-                                                sort_header("Monto (MXN)", "monto_cotizacion_mxn"),
+                                                rx.hstack(rx.icon("box", size=12), sort_header("Servicio de Interés", "servicio_producto_interes"), align="center"),
+                                                on_click=lambda: LeadState.set_sort_col("servicio_producto_interes"),
+                                                cursor="pointer",
+                                            ),
+                                            rx.table.column_header_cell(
+                                                rx.hstack(rx.icon("check", size=12), sort_header("Status", "status_actual"), align="center"),
+                                                on_click=lambda: LeadState.set_sort_col("status_actual"),
+                                                cursor="pointer",
+                                            ),
+                                            rx.table.column_header_cell(
+                                                rx.hstack(rx.icon("dollar-sign", size=12), sort_header("Monto (MXN)", "monto_cotizacion_mxn"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("monto_cotizacion_mxn"),
                                                 cursor="pointer",
                                             ),
                                             rx.table.column_header_cell(
-                                                sort_header("Cierre Est.", "fecha_estimada_cierre"),
+                                                rx.hstack(rx.icon("calendar-check", size=12), sort_header("Cierre Est.", "fecha_estimada_cierre"), align="center"),
                                                 on_click=lambda: LeadState.set_sort_col("fecha_estimada_cierre"),
                                                 cursor="pointer",
                                             ),
-                                            rx.table.column_header_cell("Línea de Negocio"),
+                                            rx.table.column_header_cell(
+                                                rx.hstack(rx.icon("briefcase-business", size=12), sort_header("Línea de Negocio", "linea_negocio"), align="center"),
+                                                on_click=lambda: LeadState.set_sort_col("linea_negocio"),
+                                                cursor="pointer",
+                                            ),
                                             rx.table.column_header_cell("Acciones"),
                                         )
                                     ),
@@ -598,7 +614,16 @@ def leads_page() -> rx.Component:
                                         rx.foreach(LeadState.leads_paginados, fila_lead)
                                     ),
                                     variant="surface",
-                                    style={"min_width": "1400px", "width": "100%", "table_layout": "fixed"},
+                                    style={
+                                        "width": "max-content",
+                                        "tablke_layout": "auto",
+                                        "& tbody tr:nth-child(odd)": {
+                                            "background": "var(--gray-1)"
+                                        },
+                                        "& tbody tr:nth-child(even)": {
+                                            "background": "var(--gray-2)"
+                                        },
+                                    },
                                 ),
                                 overflow_x="auto",
                                 width="100%",
