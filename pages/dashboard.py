@@ -388,7 +388,6 @@ def grafico_funnel_ventas() -> rx.Component:
                     rx.recharts.label_list(
                         position="inside",
                         data_key="status",
-                        fill="#FFFFFF",
                         stroke="none",
                     ),
                     data_key="cantidad",

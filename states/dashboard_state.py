@@ -347,7 +347,7 @@ class DashboardState(rx.State):
 
     @rx.var
     def leads_por_status(self) -> list[dict]:
-        fill = ["#4e7cff", "#7033ff", "#f65164", "#22c0ff", "#dc7653"]
+        fill = ["#8ba7f5", "#bea5f7", "#f7b4bc", "#b5e5f8", "#f3cfc3"]
         conteo = {}
         for lead in self.leads_filtrados:
             status = lead.get("status_actual")
